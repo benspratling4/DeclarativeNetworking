@@ -5,6 +5,25 @@
 For Apple platforms, `Foundation`'s `URL` and `URLRequest` are object-oriented types.  For clarity and correctness, we'd like to have declarative / functional API's for providing aspects to `URLRequest`s.
 This library offers simple `resultBuilders` which make constructing `URLRequest`s for large applications doable with declarative syntax. 
 
+Here's a quick sample of what it can do, from the integration tests
+
+
+```swift
+try URLRequest(url: rootUrl).updating {
+	HTTPMethod.POST
+	"api/v1/samples"
+		if let lowId = sinceId {
+		URLQueryItem(name: "sinceId", value: lowId)
+	}
+	Authorization(.bearer("12345"))
+	CacheControl([.noCache, .noStore])
+	JSON(SampleBody(content: "value")) {
+		JSONEncoder.DateEncodingStrategy.millisecondsSince1970
+	}
+}
+```
+
+
 
 ## URLRequests (`@URLRequestUpdating`)
 
