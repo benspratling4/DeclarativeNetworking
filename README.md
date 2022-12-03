@@ -12,7 +12,7 @@ Here's a quick sample of what it can do, from the integration tests
 try URLRequest(url: rootUrl).updating {
 	HTTPMethod.POST
 	"api/v1/samples"
-		if let lowId = sinceId {
+	if let lowId = sinceId {
 		URLQueryItem(name: "sinceId", value: lowId)
 	}
 	Authorization(.bearer("12345"))
