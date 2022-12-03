@@ -15,7 +15,7 @@ Large apps will want to provide `URLRequest`s from common code to establish thei
 ```swift
 func createTemplateURLRequest()->URLRequest { ... }
 
-let request = createTemplateURLRequest().updating {
+let request = try createTemplateURLRequest().updating {
 	HTTPMethod.POST
 	"/v1/statuses"
 }
@@ -27,7 +27,7 @@ Of course, if you want to start from scratch, you can always just:
 
 ```swift
 let rootUrl = URL(string:"https://api.myserver.com")!
-let request = URLRequest(url:rootUrl).updating {
+let request = try URLRequest(url:rootUrl).updating {
 	HTTPMethod.POST
 	"/v1/statuses"
 }
@@ -40,7 +40,7 @@ let request = URLRequest(url:rootUrl).updating {
 This library defines `HTTPMethod`, a `String`-based `enum` for all standard HTTP methods.  You can modify the methods of a URLRequest just by adding an expression of a method case:
 
 ```swift
-let request = templateRequest.updating {
+let request = try templateRequest.updating {
 	HTTPMethod.POST
 }
 ```
@@ -50,7 +50,7 @@ let request = templateRequest.updating {
 Plain `String`s are interpretted as path components, each `String` in the closure is a call to `appendingPathComponent` on the `URL`.
 
 ```swift
-let request = templateRequest.updating {
+let request = try templateRequest.updating {
 	"v1/statuses"
 }
 ```
@@ -60,7 +60,7 @@ The path of the resulting URLRequest would be "/v1/statuses"
 While 
 
 ```swift
-let request = templateRequest.updating {
+let request = try templateRequest.updating {
 	"v1"
 	"statuses"
 }
@@ -69,7 +69,7 @@ produces the same result, thus allowing you to intersperse String variables with
 
 ```swift
 let accountId:String = ...
-let request = templateRequest.updating {
+let request = try templateRequest.updating {
 	"v1/accounts"
 	accountId
 	"media"
@@ -83,7 +83,7 @@ Foundation's `URLQueryItem` will append the item to the request's url.  Often qu
 
 ```swift
 let sinceId:String? = ...
-let request = templateRequest.updating {
+let request = try templateRequest.updating {
 	"v1/posts"
 	if let arg = sinceId {
 		URLQueryItem(name:"sinceId", value:arg)
@@ -113,7 +113,7 @@ Declares the `Content-Type` header:
 
 ```swift
 let sinceId:String? = ...
-let request = templateRequest.updating {
+let request = try templateRequest.updating {
 	HTTPMethod.POST
 	"v1/media"
 	ContentType("image/jpeg")
@@ -129,7 +129,7 @@ On platforms which have the `UniformTypeIdentifiers` framework, you can pass a `
 If you heave a bearer token, add the authorization header like so:
 ```swift
 let bearerToken:String = ...
-let request = templateRequest.updating {
+let request = try templateRequest.updating {
 	Authorization(.bearer(bearerToken))
 }
 ```
@@ -148,7 +148,7 @@ To set the languages the user may be able to read, use the Accept-Language heade
 
 ```swift
 let bearerToken:String = ...
-let request = templateRequest.updating {
+let request = try templateRequest.updating {
 	AcceptLanguage()
 }
 ```
@@ -162,7 +162,7 @@ Will include a list of the `NSLocale.preferredLanguages` with quality paramters 
 ### Cache-Control
 
 ```swift
-let request = templateRequest.updating {
+let request = try templateRequest.updating {
 	CacheControl([.noCache, .noStore])
 }
 ```
@@ -189,14 +189,14 @@ To provide a mime type directly when you have one handy, you can provide a tuple
 
 ### JSON Encoding
 
-Often, you'll have identical settings for your `JSONEncoder` for most endpoints in your app.  So for encoding bodies into json, we assume you'll ant to build your `JSONEncoder` independently and reuse it across many api calls. 
+Often, you'll have identical settings for your `JSONEncoder` for most endpoints in your app.  So for encoding bodies into json, we assume you'll want to build your `JSONEncoder` independently and reuse it across many api calls. 
 
 But once you have your `JSONEncoder`, there's a quick public function called `JSON`:
 
 ```swift
 let encoder:JSONEncoder = ...
 let someEncodable:Encodable = ...
-let request = templateRequest.updating {
+let request = try templateRequest.updating {
 	JSON(someEncodable, encoder)
 }
 ```
@@ -209,7 +209,7 @@ If you want to configure a one-off JSONEncoder, you can do so with the builder:
 
  ```swift
 let someEncodable:Encodable = ...
-let request = templateRequest.updating {
+let request = try templateRequest.updating {
 	JSON(someEncodable) {
 		JSONEncoder.DateEncodingStrategy.millisecondsSince1970
 		JSONEncoder.DataEncodingStrategy.base64
