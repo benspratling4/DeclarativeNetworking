@@ -27,3 +27,14 @@ extension Optional : URLRequestUpdating where Wrapped == URLQueryItem {
 		}
 	}
 }
+
+
+extension Array : URLRequestUpdating where Element == URLQueryItem {
+	
+	public func updatingUrlRequest(_ request:URLRequest)throws->URLRequest {
+		var newRequest = request
+		newRequest.url = MinUrl(request.url!).appendingQueryItems(self).url
+		return newRequest
+	}
+	
+}

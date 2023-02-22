@@ -10,7 +10,7 @@ import Foundation
 
 
 public func MultiPartForm(@MultiPartFormBuilder buildForm:()->[URLRequest.FormPart])->URLRequestUpdating {
-	return buildForm()
+	return MultiPartFormItems(fields: buildForm())
 }
 
 
@@ -38,4 +38,5 @@ extension URLRequest {
 	}
 	
 }
+
 

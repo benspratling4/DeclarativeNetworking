@@ -18,14 +18,15 @@ public func FormField(_ fieldName:String, value:String)->URLRequest.FormPart {
 }
 
 
-extension Array : URLRequestUpdating where Element == URLRequest.FormPart {
+struct MultiPartFormItems : URLRequestUpdating {
+	var fields:[URLRequest.FormPart] = []
 	
-	public func updatingUrlRequest(_ request:URLRequest)throws->URLRequest {
+	func updatingUrlRequest(_ request:URLRequest)throws->URLRequest {
 		var newRequest = request
 		let boundary:String = NSUUID().uuidString.replacingOccurrences(of: "-", with: "")
 		newRequest.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
 		var bodyData:Data = Data()
-		for part in self {
+		for part in fields {
 			bodyData.appendBeginningOfPart(boundary:boundary)
 			switch part {
 			case .field(name:let name, value:let value):
@@ -59,8 +60,8 @@ extension Array : URLRequestUpdating where Element == URLRequest.FormPart {
 		newRequest.addValue("\(bodyData.count)", forHTTPHeaderField: "Content-Length")
 		return newRequest
 	}
+	
 }
-
 
 
 extension Data {
