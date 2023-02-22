@@ -246,6 +246,24 @@ You can use the values with the JSON function, as in the pervious example, or yo
 	
 
 
+### MultiPartForm
+
+Craft multi-part form bodies using the MultiPartForm with either `FormField` or `FormAttachment` items.
+
+
+ ```swift
+let someEncodable:Encodable = ...
+let imageData:Data = ...
+let request = try templateRequest.updating {
+	MultiPartForm {
+		FormField("caption", value: "Some friends and I visit the Ark.")
+		FormAttachment("background", filename:"IMG_2357.JPG", contentType:"image/jpeg", body: imageData)
+	}
+}
+```
+
+
+
 ### Extensible body encoding
 
 Any encoder which conforms to Combine's TopLevelEncoder can be used to set the body.  First, add an extension to your encoder so it conforms to `MimeTypingTopLevelEncoder`, which declares one property `var encodingMimeType:String`.  Return the correct MIME type from that.
