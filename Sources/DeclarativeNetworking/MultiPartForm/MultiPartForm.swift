@@ -26,6 +26,17 @@ public func MultiPartForm(@MultiPartFormBuilder buildForm:()->[URLRequest.FormPa
 		return newContent
 	}
 	
+	
+	public static func buildPartialBlock(first content:[URLRequest.FormPart])->[URLRequest.FormPart] {
+		return content
+	}
+	
+	public static func buildPartialBlock(accumulated content:[URLRequest.FormPart], next:[URLRequest.FormPart])->[URLRequest.FormPart] {
+		var newContent = content
+		newContent.append(contentsOf:next)
+		return newContent
+	}
+	
 }
 
 
