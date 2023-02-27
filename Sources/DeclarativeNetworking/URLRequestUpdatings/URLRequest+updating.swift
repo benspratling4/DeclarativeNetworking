@@ -19,4 +19,14 @@ extension URLRequest {
 		}
 		return finalRequest
 	}
+	
+	public func settingPathQueryItemsAndFragment(from otherUrl:URL)->URLRequest {
+		let minUrl = MinUrl(self.url!)
+		let newUrl = minUrl.settingPathQueryItemsAndFragment(from: otherUrl)
+		
+		var newRequest = self
+		newRequest.url = newUrl
+		return newRequest
+	}
+	
 }

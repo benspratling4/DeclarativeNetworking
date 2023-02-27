@@ -33,4 +33,13 @@ struct MinUrl {
 		return MinUrl(components.url!)
 	}
 	
+	func settingPathQueryItemsAndFragment(from otherUrl:URL)->URL {
+		let otherComponents = URLComponents(url: otherUrl, resolvingAgainstBaseURL: false)!
+		var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+		components.path = otherComponents.path
+		components.queryItems = otherComponents.queryItems
+		components.fragment = otherComponents.fragment
+		return components.url!
+	}
+	
 }
