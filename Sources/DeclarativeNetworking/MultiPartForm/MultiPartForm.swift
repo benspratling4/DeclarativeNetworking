@@ -29,7 +29,7 @@ public func MultiPartForm(@MultiPartFormBuilder buildForm:()->[URLRequest.FormPa
 	}
 	
 	public static func buildOptional(_ component: SecretMultiPartFormBuildingComponent?) -> SecretMultiPartFormBuildingComponent {
-		return SecretMultiPartFormBuildingComponent(parts: [])
+		return component ?? SecretMultiPartFormBuildingComponent(parts: [])
 	}
 	
 	public static func buildPartialBlock(first content:SecretMultiPartFormBuildingComponent)->SecretMultiPartFormBuildingComponent {
