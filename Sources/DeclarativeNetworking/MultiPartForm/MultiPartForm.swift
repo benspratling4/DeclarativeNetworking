@@ -16,25 +16,33 @@ public func MultiPartForm(@MultiPartFormBuilder buildForm:()->[URLRequest.FormPa
 
 @resultBuilder public struct MultiPartFormBuilder {
 	
-	public static func buildPartialBlock(first content:URLRequest.FormPart)->[URLRequest.FormPart] {
-		return [content]
+	public static func buildExpression(_ component: URLRequest.FormPart?)->SecretMultiPartFormBuildingComponent {
+		return SecretMultiPartFormBuildingComponent(parts: component.flatMap({ [$0] }) ?? [])
 	}
 	
-	public static func buildPartialBlock(accumulated content:[URLRequest.FormPart], next:URLRequest.FormPart)->[URLRequest.FormPart] {
-		var newContent = content
-		newContent.append(next)
-		return newContent
+	public static func buildExpression(_ component: URLRequest.FormPart)->SecretMultiPartFormBuildingComponent {
+		return SecretMultiPartFormBuildingComponent(parts: [component])
 	}
 	
+	public static func buildExpression(_ components:[URLRequest.FormPart])->SecretMultiPartFormBuildingComponent {
+		return SecretMultiPartFormBuildingComponent(parts: components)
+	}
 	
-	public static func buildPartialBlock(first content:[URLRequest.FormPart])->[URLRequest.FormPart] {
+	public static func buildOptional(_ component: SecretMultiPartFormBuildingComponent?) -> SecretMultiPartFormBuildingComponent {
+		return SecretMultiPartFormBuildingComponent(parts: [])
+	}
+	
+	public static func buildPartialBlock(first content:SecretMultiPartFormBuildingComponent)->SecretMultiPartFormBuildingComponent {
 		return content
 	}
 	
-	public static func buildPartialBlock(accumulated content:[URLRequest.FormPart], next:[URLRequest.FormPart])->[URLRequest.FormPart] {
-		var newContent = content
-		newContent.append(contentsOf:next)
-		return newContent
+	public static func buildPartialBlock(accumulated content:SecretMultiPartFormBuildingComponent, next:SecretMultiPartFormBuildingComponent)->SecretMultiPartFormBuildingComponent {
+		return SecretMultiPartFormBuildingComponent(parts: content.parts + next.parts)
+	}
+	
+	
+	public static func buildFinalResult(_ component: SecretMultiPartFormBuildingComponent) -> [URLRequest.FormPart] {
+		return component.parts
 	}
 	
 }
@@ -48,6 +56,12 @@ extension URLRequest {
 		//TODO: consider better name for init'ing?
 	}
 	
+}
+
+
+
+public struct SecretMultiPartFormBuildingComponent {
+	var parts:[URLRequest.FormPart]
 }
 
 

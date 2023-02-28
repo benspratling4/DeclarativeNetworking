@@ -87,5 +87,37 @@ final class MultiPartFormTests: XCTestCase {
 		XCTAssertNotNil(bodyData.range(of: binaryData))
 	}
 	
+	
+	
+	func testOptional() throws {
+		let possible:String? = nil
+		let req:URLRequest = try URLRequest(url: rootUrl).updating({
+			HTTPMethod.POST
+			"/api/v1/groups"
+			MultiPartForm {
+				FormField("some other", value: "a")
+				if let possible {
+					FormField("display_name", value: possible)
+				}
+			}
+		})
+		XCTAssertEqual(req.httpMethod, "POST")
+		let url = try XCTUnwrap(req.url)
+		XCTAssertEqual(url.path, "/api/v1/groups")
+		let bodyData = try XCTUnwrap(req.httpBody)
+		
+		//check length of body data to match header field
+		let reportedLengthString:String = try XCTUnwrap(req.value(forHTTPHeaderField: "Content-Length"))
+		let reportedLength:Int = try XCTUnwrap(Int(reportedLengthString))
+		XCTAssertEqual(reportedLength, bodyData.count)
+		
+		//check for field value
+		let fieldData = "Content-Disposition: form-data; name=\"display_name\"\r\n\r\nA Group".data(using: .utf8)!
+		XCTAssertNil(bodyData.range(of: fieldData))
+		
+	}
+	
+	
+	
 }
 
