@@ -42,4 +42,12 @@ struct MinUrl {
 		return components.url!
 	}
 	
+	func prependingSubDomain(_ subDomain:String)->MinUrl {
+		var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+		var host:String = components.host ?? ""
+		host = subDomain + "." + host
+		components.host = host
+		return MinUrl(components.url!)
+	}
+	
 }
