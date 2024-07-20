@@ -114,11 +114,29 @@ let request = try templateRequest.updating {
 The result builder handles the optional inclusion of the sinceId paramter, while the limit parameter is always included.
 
 
+
+### Request settings
+
+### Network access
+
+Both `AllowsExpensiveNetworkAccess` and `AllowsConstrainedNetworkAccess` are supported.  See the Extensibility section below to add support for other settings.
+
+
+```swift
+let isFileToBig:Bool = ...
+let request = try templateRequest.updating {
+	"v1/posts"
+	AllowsExpensiveNetworkAccess(!isFileToBig)
+}
+```
+
+
+
 ### Extensibility
 
 `URLRequest.updating` is implemented with a protocol, `URLRequestUpdating`, and as a result, you can declare your own types to conform, allowing them to update the `URLRequest` as needed. 
 
-They merely need to implement the `func updatingUrlRequest(_ request:URLRequest)throws->URLRequest` method.
+They merely need to implement the protocol conrormance with the `func updatingUrlRequest(_ request:URLRequest)throws->URLRequest` method.
 
 
 ## Headers
